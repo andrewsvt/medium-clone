@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  ::-webkit-scrollbar-track
+  {
+    background-color: #EEEEEE;
+  }
+  ::-webkit-scrollbar
+  {
+    width: 14px;
+    background-color: #EEEEEE;
+  }
+
+  ::-webkit-scrollbar-thumb
+  {
+    background-color: #424242;
+    border: 2px solid #EEEEEE;
+  }
+
+  input::placeholder {
+    color: #E0E0E0;
+  }
+
+  textarea::placeholder {
+    color: #E0E0E0;
+  }
+
+
+      @font-face {
+        font-family: 'Charter';
+        src: url('../public/fonts/Charter-Regular.ttf') format('ttf');
+            font-weight: 400;
+            font-display: swap;
+            font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Boska';
+        src: url('../public/fonts/Boska-Medium.woff2') format('woff2');
+             font-weight: 500;
+             font-display: swap;
+             font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Boska';
+        src: url('../public/fonts/Boska-Bold.woff2') format('woff2');
+             font-weight: 700;
+             font-display: swap;
+             font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Boska';
+        src: url('../public/fonts/Boska-Black.woff2') format('woff2');
+             font-weight: 900;
+             font-display: swap;
+             font-style: normal;
+      }
+}

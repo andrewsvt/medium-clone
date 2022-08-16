@@ -1,86 +1,123 @@
+import React from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-const Home: NextPage = () => {
+import { useState, useEffect } from 'react'
+import { configuredSanityClient } from '../sanityApi'
+import imageUrlBuilder from '@sanity/image-url'
+
+import Menu from '../components/Menu'
+import HMenu from '../components/HMenu'
+
+import { PostInterface } from '../typings'
+import NewStory from './new-story'
+
+interface Props {
+  posts: PostInterface[]
+}
+
+const builder = imageUrlBuilder(configuredSanityClient)
+function urlFor(source: string) {
+  return builder.image(source)
+}
+
+const Home: NextPage<Props> = ({ posts }) => {
+  // const router = useRouter()
+  // const [isMobile, setIsMobile] = useState(false)
+  // const handleScreenSize = () => {
+  //   if (window.innerWidth < 768) {
+  //     setIsMobile(true)
+  //   } else {
+  //     setIsMobile(false)
+  //   }
+  // }
+  // useEffect(() => {
+  //   window.addEventListener('resize', handleScreenSize)
+  // })
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="m-0 box-border text-mainText">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Medium Blog</title>
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className="flex flex-col md:flex-row md:justify-between m-auto md:max-w-3xl lg:max-w-[1504px]">
+        {/* {isMobile && <HMenu />} */}
+        <Menu />
+        <div className="block divide-y-[1px] divide-[#E0E0E0] m-auto px-7 md:max-w-[692px] mb-[80px] md:m-0">
+          {posts.map((element) => (
+            <Link key={element._id} href={`/post/${element._id}`}>
+              <div className="flex gap-6 flex-col md:flex-row justify-between items-start md:items-center w-full min-h-[230px] py-5 cursor-pointer">
+                <div className="flex flex-col justify-center items-start h-auto mt-10 mb-4 md:m-0">
+                  {/* author */}
+                  <div className="flex flex-row items-center pb-3">
+                    <img
+                      className="w-[22px] h-auto rounded-full object-cover"
+                      src={urlFor(element.author.image).width(200).url()!}
+                      alt=""
+                    />
+                    <span className="pl-3 text-sm font-medium">
+                      {element.author.name}
+                    </span>
+                  </div>
+                  {/* title */}
+                  <div className="max-w-md pb-3">
+                    <p className="text-2xl font-extrabold pb-1">
+                      {element.title}
+                    </p>
+                    <p className="text-base font-normal text-gray overflow-ellipsis">
+                      {element.description}
+                    </p>
+                  </div>
+                  {/* data */}
+                  <div className="text-sm text-gray font-normal">
+                    {element.publishedAt
+                      .slice(0, 10)
+                      .split('-')
+                      .reverse()
+                      .join('-')}
+                  </div>
+                </div>
+                {/* image */}
+                <div className="flex flex-col justify-center items-center w-full h-[230px] md:w-[150px] md:h-[150px] m-0 object-cover">
+                  <img
+                    className="w-full h-full object-cover rounded-md"
+                    src={urlFor(element.mainImage.asset).url()!}
+                    alt=""
+                  />
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+        <div className="hidden lg:flex border-l-[1px] border-[#E0E0E0] w-[340px] z-10">
+          <div className=""></div>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default Home
+
+export const getServerSideProps = async () => {
+  const query = `*[_type == 'post']{
+    _id,
+    title, 
+    description,
+    mainImage, 
+    author -> {name, image},
+    slug,
+    publishedAt
+   }`
+
+  const posts = await configuredSanityClient.fetch(query)
+
+  return {
+    props: {
+      posts
+    }
+  }
+}
